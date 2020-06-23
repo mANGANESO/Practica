@@ -17,15 +17,22 @@ class Juego{
 	///Este sera el inicio
 	public static class Portada extends JFrame implements ActionListener, KeyListener{
 
-     JPanel panel;
+     JPanel panel,panel2;
      JLabel portada;
      BufferedImage bfimage;
      JButton btninicio;
      BufferedImage avatar;
      BufferedImage subavatar;
      BufferedImage enemigos;
+     //Movimientos avatar
      int indiceX = 0;
      int indiceX2 = 9;
+     int indiceX3 = 0;
+     int indiceX4 = 0;
+
+     //entorno
+     JLabel fondo;
+
 
      Avatar personajeP;
      Enemigo evil;
@@ -36,8 +43,9 @@ class Juego{
       componentesPaneles();
  
       
+      this.add(panel2);
       this.add(panel);
-      this.setSize(1366,768);
+      this.setSize(1200,600);
       this.setVisible(true);
       this.setTitle("Thunder Game");
       this.setLocationRelativeTo(null);
@@ -55,17 +63,22 @@ class Juego{
       panel.setLayout(null);
       panel.setFocusable(true);
       panel.requestFocusInWindow();
-      panel.setBackground(Color.BLACK);
       panel.setVisible(true);
+      
+      panel2 = new JPanel();
+      panel2.setLayout(null);
+      panel2.setFocusable(true);
+      panel2.requestFocusInWindow();
+      panel2.setBackground(Color.BLACK);
+      panel2.setVisible(false);
+      
 
       
       //boton de inicio
       try{
-
-
       bfimage = ImageIO.read(new File("./images/Favicon.png"));   
       portada = new JLabel(new ImageIcon(bfimage));   
-      portada.setBounds(0,0,1300,763);
+      portada.setBounds(0,0,1200,600);
       btninicio= new JButton("Comenzar");
       btninicio.setBounds(544,400,200,50);
       btninicio.setForeground(Color.WHITE);
@@ -86,21 +99,25 @@ class Juego{
       	
         
         panel.setVisible(false);
-         remove(panel);
-         
-         evil = new Enemigo();
+        remove(panel);
+        this.requestFocus();
+        
 
+
+        evil = new Enemigo();
         try{
-
-         avatar = ImageIO.read(new File("./images/avatar.png"));
-
-
+        avatar = ImageIO.read(new File("./images/avatar.png"));
         }catch(Exception e){
-           System.out.println("Ha ocurrido un error a la hora de cargar los jugadores. :(");
+        System.out.println("Ha ocurrido un error a la hora de cargar los jugadores. :(");
         } 
         subavatar = avatar.getSubimage(0,64 * 3, 64, 64);
         personajeP = new Avatar(subavatar);
-        this.add(personajeP);
+
+
+        panel2.setVisible(true);
+        this.add(panel);
+        this.add(panel2);
+        panel2.add(personajeP);
 
         /*Carga de enemigos */
         
@@ -116,6 +133,8 @@ class Juego{
     int x = (int)pos.getX();
     int y = (int)pos.getY();
 
+    try{
+    //desplazamiento hacia abajo	
     if(t==68)
     {
       x = x+5;
@@ -128,7 +147,7 @@ class Juego{
          x=0;
       }
     }
-
+    //desplazamiento hacia arrba
     else if(t==65)
     {
       x = x-5;
@@ -142,29 +161,33 @@ class Juego{
     
       }
     }
-    /*
+    //Desplazamiento hacia abajo
     else if(t==83)
     {
       y = y+5;
-      indiceX = ((indiceX + 1) % 9) * 64;
-      personajeP.avatar = avatar.getSubimage(indiceX,64*2,64,64);
+      indiceX3 = ((indiceX3 + 1)% 9)*64;
+      personajeP.avatar = avatar.getSubimage(indiceX3,64*10,64,64);
+      if (y > 300) {
+      	 y = 300;
+      }
     }
+    //desplazamiento hacia arriba
     else if(t==87)
     {
       y = y-5;
-      indiceX = ((indiceX + 1) % 9) * 64;
-      personajeP.avatar = avatar.getSubimage(indiceX,64*0,64,64);
-    } */
-      personajeP.setLocation(x,y);
+      indiceX4 = ((indiceX4 + 1)%9)*64;
+      personajeP.avatar = avatar.getSubimage(indiceX4,64*8,64,64);
+      if (y<-214) {
+      	 y=-214;
+      }
+    } 
+    personajeP.setLocation(x,y);
 
-     }
-     public void keyReleased(KeyEvent e){
-
-     }
-     public void keyTyped(KeyEvent e){
-
-
-     }
-     
+    }catch(Exception a){
+      System.out.println("Error en movimiento");
+    }
+    }
+    public void keyReleased(KeyEvent e){}
+    public void keyTyped(KeyEvent e){}  
   }
 }
